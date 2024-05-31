@@ -806,7 +806,12 @@ class PauliString(raw_types.Operation, Generic[TKey]):
             )
         if self._is_parameterized_():
             return NotImplemented
-        if isinstance(power, (int, float)):
+        if isinstance(power, int):
+            if power % 2 == 1:
+                return self
+            else:
+                return self.__mul__(self)
+        elif isinstance(power, float):
             r, i = cmath.polar(self.coefficient)
             if abs(r - 1) > 0.0001:
                 # Raising non-unitary PauliStrings to a power is not supported.

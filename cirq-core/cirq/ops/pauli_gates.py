@@ -164,7 +164,18 @@ class _PauliZ(Pauli, common_gates.ZPowGate):
         common_gates.ZPowGate.__init__(self, exponent=1.0)
 
     def __pow__(self, exponent: 'cirq.TParamVal') -> common_gates.ZPowGate:
-        return common_gates.ZPowGate(exponent=exponent) if exponent != 1 else _PauliZ()
+        if isinstance(exponent, int):
+            if exponent == 1:
+                return _PauliZ()
+            elif exponent > 1:
+                if exponent % 2 == 1:
+                    return _PauliZ()
+                else:
+                    return _PauliZ()*_PauliZ()
+            else: 
+                return common_gates.ZPowGate(exponent=exponent)
+        else:
+            return common_gates.ZPowGate(exponent=exponent)
 
     def _with_exponent(self, exponent: 'cirq.TParamVal') -> common_gates.ZPowGate:
         return self.__pow__(exponent)
